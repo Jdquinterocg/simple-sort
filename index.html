@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selector Aleatorio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px -10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:disabled {
+      background-color: #ddd;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 20px;
+    }
+
+    .result textarea {
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Selector Aleatorio</h1>
+
+  <label for="listInput">Introduce los elementos separados por comas:</label>
+  <textarea id="listInput" rows="5" placeholder="Ejemplo: Juan, María, Pedro, Sofía"></textarea>
+
+  <label for="numberInput">Cantidad de elementos a escoger:</label>
+  <input type="number" id="numberInput" placeholder="Ejemplo: 2" min="1">
+
+  <button id="randomButton" onclick="generateRandomList()">Generar</button>
+
+  <div class="result">
+    <label for="resultArea">Resultados aleatorios:</label>
+    <textarea id="resultArea" rows="5" readonly></textarea>
+    <button id="copyButton" onclick="copyToClipboard()">Copiar</button>
+  </div>
+</div>
+
+<script>
+  function generateRandomList() {
+    const listInput = document.getElementById('listInput').value;
+    const numberInput = parseInt(document.getElementById('numberInput').value);
+    const resultArea = document.getElementById('resultArea');
+
+    // Validación de campos vacíos
+    if (!listInput.trim()) {
+      alert('Por favor, ingrese una lista de elementos.');
+      return;
+    }
+
+    if (isNaN(numberInput) || numberInput <= 0) {
+      alert('Por favor, ingrese un número válido.');
+      return;
+    }
+
+    // Convertir la lista en un array y eliminar espacios innecesarios
+    let items = listInput.split(',').map(item => item.trim()).filter(Boolean);
+
+    if (numberInput > items.length) {
+      alert('La cantidad a seleccionar no puede ser mayor que el número de elementos en la lista.');
+      return;
+    }
+
+    // Seleccionar elementos aleatorios
+    let selectedItems = [];
+    while (selectedItems.length < numberInput) {
+      const randomIndex = Math.floor(Math.random() * items.length);
+      const randomItem = items.splice(randomIndex, 1)[0];
+      selectedItems.push(randomItem);
+    }
+
+    // Mostrar el resultado
+    resultArea.value = selectedItems.join(', ');
+  }
+
+  function copyToClipboard() {
+    const resultArea = document.getElementById('resultArea');
+    resultArea.select();
+    resultArea.setSelectionRange(0, 99999); // Para móviles
+
+    try {
+      document.execCommand('copy');
+      alert('Texto copiado al portapapeles.');
+    } catch (err) {
+      alert('Error al copiar el texto.');
+    }
+  }
+</script>
+
+</body>
+</html>
